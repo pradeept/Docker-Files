@@ -1,4 +1,4 @@
-# Docker Files 
+# Dockerfile and .dockerignore
 #### For applications written in different programming languages & frameworks
 
 1. Python FastAPI
@@ -10,4 +10,3 @@
 
 >
 > Single & Multi-stage
-
