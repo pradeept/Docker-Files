@@ -1,0 +1,25 @@
+# Base Image (as per your app requirements)
+FROM node:22.7-alpine
+
+LABEL author="Pradeep Tarakar"
+
+# Node base image already has a user
+USER node
+
+# Set working directory to user dir
+WORKDIR /home/node/
+
+# Copy package.json
+COPY --chown=$USER package.json package.json
+
+# Install deps
+RUN npm i 
+
+# Copy all required files (imp: use .dockerignore)
+COPY . . 
+
+# Expose required port
+EXPOSE 5000
+
+# Execute the entry command
+CMD [ "npm","run","start"]

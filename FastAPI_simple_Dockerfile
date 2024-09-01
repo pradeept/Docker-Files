@@ -1,0 +1,32 @@
+# Base Image
+# python<version>-slim/bullseye/alpine based on your requirement
+FROM python:3.12-bullseye
+
+LABEL author="Pradeep Tarakar"
+
+# Set env vars
+ENV USER=myapp 
+
+# Add & set user
+RUN useradd -m ${USER}
+USER ${USER}
+
+# Set working directory to user dir
+WORKDIR /home/${USER}/
+
+# Copy requirements.txt
+COPY requirements.txt .
+
+# Install deps
+RUN pip install --upgrade pip \
+    && pip install -r requirements.txt
+
+# Copy app folder (according to your project)
+# Alternatively you can use .dockerignore & copy all 
+COPY /src/ src/
+
+# Expose required port
+EXPOSE 5000
+
+# Execute the entry command
+CMD [ "uvicorn", "app.main:app", "--reload", "--host 0.0.0.0", "--port 5000 "]

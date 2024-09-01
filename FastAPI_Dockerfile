@@ -2,8 +2,10 @@
 # python<version>-slim/bullseye/alpine based on your requirement
 FROM python:3.12-slim 
 
+LABEL author="Pradeep Tarakar"
+
 # Set env vars
-ENV USER=pradeep 
+ENV USER=myapp 
 
 # Create and set a user
 RUN useradd -m ${USER}
