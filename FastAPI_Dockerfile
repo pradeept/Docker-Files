@@ -1,31 +1,32 @@
 # Base Image
-# python<version>-slim based on your requirement
-FROM python:3.9-slim 
+# python<version>-slim/bullseye/alpine based on your requirement
+FROM python:3.12-slim 
 
 # Set env vars
-ENV USER=app_name 
+ENV USER=pradeep 
 
-# Create an user to avoid root execution
+# Create and set a user
 RUN useradd -m ${USER}
 USER ${USER}
 
-# Set working directory
+# Set working directory to user dir
 WORKDIR /home/${USER}/
 
-# Copy requirements.txt or poetry.lock or .toml
-COPY --chown=${USER} poetry.lock .
+# Copy pyproject.toml
+COPY --chown=${USER} poetry.lock pyproject.toml ./
 
-# Create & use a virtual environment
-RUN python -m venv && source venv/bin/activate
+# Poetry deps installation folder added to PATH
+ENV PATH="/home/${USER}/.local/bin:$PATH"
 
-# Install poetry & dependencies
-RUN python3 -m pip install poetry && poetry install
+# Setup poetry & install deps through poetry
+RUN pip3 install poetry 
+# RUN poetry config virtualenvs.create false 
+RUN poetry install --no-root --no-dev
 
-# Copy project files
-COPY --chown=${USER} . .
+COPY --chown=${USER} /src/ src/
 
 # Expose required port
 EXPOSE 5000
 
 # Entrypoint
-CMD ["uvicorn main:app --host 0.0.0.0 --port 5000"]
+CMD [ "poetry","run","uvicorn","main:app", "--host", "0.0.0.0", "--port" ,"5000" ]
