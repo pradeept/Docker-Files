@@ -1,0 +1,41 @@
+# Stage 1 = Build
+FROM node:22.7-bullseye AS build
+
+# Set working directory to user dir
+WORKDIR /app
+
+# Copy package.json
+COPY --chown=$USER package.json package.json
+
+# Install dependencies 
+RUN npm i --quiet
+
+# Copy all required files (imp: use .dockerignore)
+COPY --chown=$USER . . 
+
+# Build the bundle
+RUN npm run build
+
+
+
+# Stage 2 = server using Nginx
+FROM nginx:1.27.1-alpine
+
+# Remove default index file
+RUN rm -rf /usr/share/nginx/html/*
+
+# Create user (useradd is not available). 
+# -D to NOT assign a password 
+# RUN adduser -h /home/reactapp -D reactapp 
+
+# Switch to new user
+# USER reactapp
+
+# Copy build file
+COPY --from=build /app/build /usr/share/nginx/html/
+
+# For readability
+EXPOSE 80 
+
+# Start nginx (don't self deamonize)
+CMD [ "nginx", "-g", "deamon off" ]
