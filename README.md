@@ -4,9 +4,9 @@
 1. Python FastAPI
 2. Node.js
 3. React.js
-4. Next.js
-5. R program
-6. Go lang 
+4. R program
+5. Go lang 
+6. Python + Shiny
 
 >
 > Single & Multi-stage
